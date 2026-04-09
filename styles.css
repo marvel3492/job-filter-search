@@ -1,0 +1,3 @@
+.strike-all * {
+    text-decoration: line-through !important;
+}

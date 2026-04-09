@@ -1,0 +1,19 @@
+{
+    "manifest_version": 3,
+    "name": "Handshake Search",
+    "version": "1.0",
+    "description": "Custom search filters for Handshake job listings.",
+    "content_scripts": [
+        {
+            "matches": ["https://*.joinhandshake.com/job-search/*"],
+            "js": ["utils.js", "content.js"],
+            "css": ["styles.css"]
+        }
+    ],
+    "permissions": ["storage"],
+    "background": {
+        "service_worker": "background.js",
+        "type": "module"
+    },
+    "action": {}
+}
