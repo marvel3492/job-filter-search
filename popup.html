@@ -2,12 +2,12 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Handshake Search</title>
+        <title>Job Filter Search</title>
     </head>
     <body>
         <h2>Filter Settings</h2>
         <form>
-            <label for="state">Whitelisted State:</label>
+            <label for="state">Whitelisted State (Handshake Only):</label>
             <select id="state">
                 <option value="">--</option>
                 <option value="AL">AL</option>
@@ -84,6 +84,9 @@
             <input id="company" type="text" minlength="1">
             <button id="companyButton" type="button">Add to Blacklist</button>
             <div id="companyDiv"></div>
+            <hr>
+            <label for="verified">Verified Only (LinkedIn Only):</label>
+            <input id="verified" type="checkbox">
             <hr>
             <button id="updateButton" type="button">Update</button>
             <div id="updateDiv"></div>

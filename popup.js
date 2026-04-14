@@ -67,12 +67,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const salaryFrequencyElement = document.getElementById("salaryFrequency");
     const salaryCompareElement = document.getElementById("salaryCompare");
     const companyElement = document.getElementById("company");
+    const verifiedElement = document.getElementById("verified");
     const updateDivElement = document.getElementById("updateDiv");
-    chrome.storage.local.get(["state", "salary", "salaryFrequency", "salaryCompare", "companies"], data => {
+    chrome.storage.local.get(["state", "salary", "salaryFrequency", "salaryCompare", "companies", "verified"], data => {
         stateElement.value = data.state || "";
         salaryElement.value = data.salary || "";
         salaryFrequencyElement.value = data.salaryFrequency || "yr"
         salaryCompareElement.value = data.salaryCompare || "min";
+        verifiedElement.checked = data.verified || false;
         if (data.companies) {
             companies = new Set(data.companies);
         }
@@ -103,13 +105,18 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
+        verifiedElement.addEventListener("input", () => {
+            updateDivElement.innerHTML = "";
+        });
+
         document.getElementById("updateButton").addEventListener("click", () => {
             chrome.storage.local.set({
                 state: stateElement.value,
                 salary: parseFloat(salaryElement.value),
                 salaryFrequency: salaryFrequencyElement.value,
                 salaryCompare: salaryCompareElement.value,
-                companies: [...companies]
+                companies: [...companies],
+                verified: verifiedElement.checked
             });
 
             updateDivElement.innerHTML = "Updated";
