@@ -7,7 +7,7 @@
     <body>
         <h2>Filter Settings</h2>
         <form>
-            <label for="state">Whitelisted State (Handshake Only):</label>
+            <label for="state">Whitelisted State*:</label>
             <select id="state">
                 <option value="">--</option>
                 <option value="AL">AL</option>
@@ -85,11 +85,22 @@
             <button id="companyButton" type="button">Add to Blacklist</button>
             <div id="companyDiv"></div>
             <hr>
-            <label for="verified">Verified Only (LinkedIn Only):</label>
+            <label for="location">Blacklisted Locations**:</label>
+            <input id="location" type="text" minlength="1">
+            <button id="locationButton" type="button">Add to Blacklist</button>
+            <div id="locationDiv"></div>
+            <hr>
+            <label for="verified">Verified Only***:</label>
             <input id="verified" type="checkbox">
             <hr>
             <button id="updateButton" type="button">Update</button>
             <div id="updateDiv"></div>
+            <hr>
+            * The setting applies to Handshake only.
+            <br>
+            ** For Handshake, the blacklist applies only if the first location listed is blacklisted.
+            <br>
+            *** The setting applies to LinkedIn only.
         </form>
         <script src="utils.js"></script>
         <script src="popup.js"></script>

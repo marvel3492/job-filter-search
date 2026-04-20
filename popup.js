@@ -1,22 +1,30 @@
-function showBlacklist(companies) {
-    document.getElementById("companyDiv").innerHTML = "";
+function createList(list, div) {
+    document.getElementById(div).innerHTML = "";
     const ul = document.createElement("ul");
-    for (const company of companies.values()) {
+    for (const element of list.values()) {
         const li = document.createElement("li");
-        li.innerHTML = company + "&nbsp;";
+        li.innerHTML = element + "&nbsp;";
         const button = document.createElement("button");
         button.type = "button";
         button.textContent = "Remove";
         button.addEventListener("click", () => {
-            companies.delete(company);
-            showBlacklist(companies);
+            list.delete(element);
+            createList(list, div);
             document.getElementById("updateDiv").innerHTML = "";
         });
 
         li.appendChild(button);
         ul.appendChild(li);
-        document.getElementById("companyDiv").appendChild(ul);
+        document.getElementById(div).appendChild(ul);
     }
+}
+
+function showCompanyBlacklist(companies) {
+    createList(companies, "companyDiv");
+}
+
+function showLocationBlacklist(locations) {
+    createList(locations, "locationDiv");
 }
 
 function showSalary(salary) {
@@ -65,6 +73,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const salaryFrequencyElement = document.getElementById("salaryFrequency");
     const salaryCompareElement = document.getElementById("salaryCompare");
     const companyElement = document.getElementById("company");
+    const locationElement = document.getElementById("location");
     const verifiedElement = document.getElementById("verified");
     const updateDivElement = document.getElementById("updateDiv");
     let storage = await getStorage();
@@ -96,7 +105,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (companyElement.value.trim() && !storage.companies.has(companyElement.value.trim())) {
             storage.companies.add(companyElement.value.trim());
             companyElement.value = "";
-            showBlacklist(storage.companies);
+            showCompanyBlacklist(storage.companies);
+            updateDivElement.innerHTML = "";
+        }
+    });
+
+    document.getElementById("locationButton").addEventListener("click", () => {
+        if (locationElement.value.trim() && !storage.locations.has(locationElement.value.trim())) {
+            storage.locations.add(locationElement.value.trim());
+            locationElement.value = "";
+            showLocationBlacklist(storage.locations);
             updateDivElement.innerHTML = "";
         }
     });
@@ -112,6 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             salaryFrequency: salaryFrequencyElement.value,
             salaryCompare: salaryCompareElement.value,
             companies: storage.companies.serialize(),
+            locations: storage.locations.serialize(),
             verified: verifiedElement.checked
         });
 
@@ -119,6 +138,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     showSalaries();
-    showBlacklist(storage.companies);
+    showCompanyBlacklist(storage.companies);
+    showLocationBlacklist(storage.locations);
     updateDivElement.innerHTML = "Loaded";
 });

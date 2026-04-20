@@ -46,6 +46,26 @@ function stringToSalary2(salary, data) {
     return newSalary;
 }
 
+function isOnCompanyBlacklist(cardCompany, companies) {
+    for (const company of companies.values()) {
+        if (cardCompany.trim().toLowerCase() === company.trim().toLowerCase()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function isOnLocationBlacklist(cardLocation, locations) {
+    for (const location of locations.values()) {
+        if (cardLocation.trim().toLowerCase().indexOf(location.trim().toLowerCase()) !== -1) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 async function search() {
     let storage = await getStorage();
     if (storage.salaryFrequency === "hr") {
@@ -90,11 +110,14 @@ async function search() {
                 }
             }
 
-            const name = card.querySelector("[role='region']").children[0].children[0].children[0].children[0].innerHTML;
-            for (const company of storage.companies.values()) {
-                if (name.trim().toLowerCase() === company.trim().toLowerCase()) {
-                    result = 0;
-                }
+            const cardCompany = card.querySelector("[role='region']").children[0].children[0].children[0].children[0].innerHTML;
+            if (isOnCompanyBlacklist(cardCompany, storage.companies)) {
+                result = 0;
+            }
+
+            const cardLocation = card.querySelector("[data-hook]").children[0].innerHTML;
+            if (isOnLocationBlacklist(cardLocation, storage.locations)) {
+                result = 0;
             }
 
             if (result === 0) {
@@ -134,11 +157,14 @@ async function search() {
                     }
                 }
 
-                const name = subtitle.querySelector("[dir='ltr']").innerHTML.replaceAll("<!---->", "").trim();
-                for (const company of storage.companies.values()) {
-                    if (name.trim().toLowerCase() === company.trim().toLowerCase()) {
-                        result = 0;
-                    }
+                const cardCompany = subtitle.querySelector("[dir='ltr']").innerHTML.replaceAll("<!---->", "").trim();
+                if (isOnCompanyBlacklist(cardCompany, storage.companies)) {
+                    result = 0;
+                }
+
+                const cardLocation = caption.querySelector("[dir='ltr']").innerHTML.replaceAll("<!---->", "").trim();
+                if (isOnLocationBlacklist(cardLocation, storage.locations)) {
+                    result = 0;
                 }
 
                 if (storage.verified) {

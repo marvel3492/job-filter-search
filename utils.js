@@ -25,13 +25,22 @@ function roundDollar(salary) {
 
 function getStorage() {
     return new Promise(function(resolve) {
-        chrome.storage.local.get(["state", "salary", "salaryFrequency", "salaryCompare", "companies", "verified"], data => {
+        chrome.storage.local.get([
+            "state",
+            "salary",
+            "salaryFrequency",
+            "salaryCompare",
+            "companies",
+            "locations",
+            "verified"
+        ], data => {
             resolve({
                 "state": data.state || "",
                 "salary": data.salary || 0,
                 "salaryFrequency": data.salaryFrequency || "yr",
                 "salaryCompare": data.salaryCompare || "min",
                 "companies": data.companies === null ? new CaseInsensitiveSet() : new CaseInsensitiveSet(data.companies),
+                "locations": data.locations === null ? new CaseInsensitiveSet() : new CaseInsensitiveSet(data.locations),
                 "verified": data.verified || false
             });
         });
