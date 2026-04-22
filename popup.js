@@ -76,69 +76,74 @@ document.addEventListener("DOMContentLoaded", async () => {
     const locationElement = document.getElementById("location");
     const verifiedElement = document.getElementById("verified");
     const updateDivElement = document.getElementById("updateDiv");
-    let storage = await getStorage();
-    stateElement.value = storage.state;
-    salaryElement.value = storage.salary;
-    salaryFrequencyElement.value = storage.salaryFrequency;
-    salaryCompareElement.value = storage.salaryCompare;
-    verifiedElement.checked = storage.verified;
 
-    stateElement.addEventListener("input", () => {
-        updateDivElement.innerHTML = "";
-    });
+    try {
+        let storage = await getStorage();
+        stateElement.value = storage.state;
+        salaryElement.value = storage.salary;
+        salaryFrequencyElement.value = storage.salaryFrequency;
+        salaryCompareElement.value = storage.salaryCompare;
+        verifiedElement.checked = storage.verified;
 
-    salaryElement.addEventListener("input", () => {
-        showSalaries();
-        updateDivElement.innerHTML = "";
-    });
-
-    salaryFrequencyElement.addEventListener("input", () => {
-        showSalaries();
-        updateDivElement.innerHTML = "";
-    });
-
-    salaryCompareElement.addEventListener("input", () => {
-        updateDivElement.innerHTML = "";
-    });
-
-    document.getElementById("companyButton").addEventListener("click", () => {
-        if (companyElement.value.trim() && !storage.companies.has(companyElement.value.trim())) {
-            storage.companies.add(companyElement.value.trim());
-            companyElement.value = "";
-            showCompanyBlacklist(storage.companies);
+        stateElement.addEventListener("input", () => {
             updateDivElement.innerHTML = "";
-        }
-    });
-
-    document.getElementById("locationButton").addEventListener("click", () => {
-        if (locationElement.value.trim() && !storage.locations.has(locationElement.value.trim())) {
-            storage.locations.add(locationElement.value.trim());
-            locationElement.value = "";
-            showLocationBlacklist(storage.locations);
-            updateDivElement.innerHTML = "";
-        }
-    });
-
-    verifiedElement.addEventListener("input", () => {
-        updateDivElement.innerHTML = "";
-    });
-
-    document.getElementById("updateButton").addEventListener("click", () => {
-        chrome.storage.local.set({
-            state: stateElement.value,
-            salary: parseFloat(salaryElement.value),
-            salaryFrequency: salaryFrequencyElement.value,
-            salaryCompare: salaryCompareElement.value,
-            companies: storage.companies.serialize(),
-            locations: storage.locations.serialize(),
-            verified: verifiedElement.checked
         });
 
-        updateDivElement.innerHTML = "Updated";
-    });
+        salaryElement.addEventListener("input", () => {
+            showSalaries();
+            updateDivElement.innerHTML = "";
+        });
 
-    showSalaries();
-    showCompanyBlacklist(storage.companies);
-    showLocationBlacklist(storage.locations);
-    updateDivElement.innerHTML = "Loaded";
+        salaryFrequencyElement.addEventListener("input", () => {
+            showSalaries();
+            updateDivElement.innerHTML = "";
+        });
+
+        salaryCompareElement.addEventListener("input", () => {
+            updateDivElement.innerHTML = "";
+        });
+
+        document.getElementById("companyButton").addEventListener("click", () => {
+            if (companyElement.value.trim() && !storage.companies.has(companyElement.value.trim())) {
+                storage.companies.add(companyElement.value.trim());
+                companyElement.value = "";
+                showCompanyBlacklist(storage.companies);
+                updateDivElement.innerHTML = "";
+            }
+        });
+
+        document.getElementById("locationButton").addEventListener("click", () => {
+            if (locationElement.value.trim() && !storage.locations.has(locationElement.value.trim())) {
+                storage.locations.add(locationElement.value.trim());
+                locationElement.value = "";
+                showLocationBlacklist(storage.locations);
+                updateDivElement.innerHTML = "";
+            }
+        });
+
+        verifiedElement.addEventListener("input", () => {
+            updateDivElement.innerHTML = "";
+        });
+
+        document.getElementById("updateButton").addEventListener("click", () => {
+            chrome.storage.local.set({
+                state: stateElement.value,
+                salary: parseFloat(salaryElement.value),
+                salaryFrequency: salaryFrequencyElement.value,
+                salaryCompare: salaryCompareElement.value,
+                companies: storage.companies.serialize(),
+                locations: storage.locations.serialize(),
+                verified: verifiedElement.checked
+            });
+
+            updateDivElement.innerHTML = "Updated";
+        });
+
+        showSalaries();
+        showCompanyBlacklist(storage.companies);
+        showLocationBlacklist(storage.locations);
+        updateDivElement.innerHTML = "Loaded";
+    } catch (e) {
+        console.error("Error:", e);
+    }
 });
