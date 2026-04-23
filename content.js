@@ -66,6 +66,26 @@ function isOnLocationBlacklist(cardLocation, locations) {
     return false;
 }
 
+// Case 1: [City], [State]
+// Case 2: Remote (or [City], [State]) (+ [Num])
+// Case 3 (rare but possible): Remote, [State]
+// Case 4 (rare but possible): Remote or Remote, [State] (+ [Num])
+function isWhitelistedState(cardState, state) {
+    if (cardState.indexOf("Remote") >= 0) {
+        if (cardState.indexOf("Remote,") >= 0) {
+            if (cardState.indexOf("Remote") === cardState.indexOf("Remote,")) { // Case 3
+                return cardState.indexOf(state) >= 0;
+            } else { // Case 4
+                return true;
+            }
+        } else { // Case 2
+            return true;
+        }
+    } else { // Case 1
+        return cardState.indexOf(state) >= 0;
+    }
+}
+
 async function search() {
     try {
         let storage = await getStorage();
@@ -81,10 +101,10 @@ async function search() {
                 let reason = "";
                 const footerChildren = card.querySelector("[data-hook='job-result-card-footer']").children;
                 const state1 = footerChildren[0].innerHTML;
-                if (storage.state !== "" && state1 !== "Remote" && state1.indexOf(storage.state) < 0) {
+                if (storage.state !== "" && !isWhitelistedState(state1, storage.state)) {
                     if (footerChildren.length > 2) {
                         const state2 = footerChildren[2].innerHTML;
-                        if (storage.state !== "" && state2 !== "Remote" && state2.indexOf(storage.state) < 0) {
+                        if (storage.state !== "" && !isWhitelistedState(state2, storage.state)) {
                             reason = "Non-whitelisted state"
                         }
                     } else {
